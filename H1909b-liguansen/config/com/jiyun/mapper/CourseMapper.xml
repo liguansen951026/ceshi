@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jiyun.mapper.CourseMapper" >
+<resultMap type="course" id="BaseMap">
+	<id column="cid" property="cid"/>
+	<result column="cname" property="cname"/>
+	<result column="price" property="price"/>
+	<result column="tai" property="tai"/>
+	<result column="img" property="img"/>
+	<result column="tid" property="tid"/>
+	<association property="type" javaType="type">
+		<id column="yid" property="yid"/>
+		<result column="tname" property="tname"/>
+	</association>
+</resultMap>
+<select id="findAll" parameterType="course" resultMap="BaseMap">
+	select * from course c,type t 
+	<where>
+		c.tid=t.yid
+		<if test="cname!=null and cname!=''">
+			and cname like '%${cname}%'
+		</if>
+		order by price asc
+	</where>
+</select>
+<select id="findType" resultType="type">
+	select * from type
+</select>
+<insert id="add" parameterType="course">
+	insert into course(cname,price,tai,img,tid) 
+	values(#{cname},#{price},#{tai},#{img},#{tid})
+</insert>
+<delete id="deleteById" parameterType="int">
+	delete from course where cid=#{cid}
+</delete>
+<select id="findById" parameterType="int" resultType="course">
+	select * from course where cid=#{cid}
+</select>
+<update id="update" parameterType="course">
+	update course set cname=#{cname},
+					  price=#{price},
+					  tai=#{tai},
+					  img=#{img},
+					  tid=#{tid} 
+	where cid=#{cid}
+</update>
+<select id="checkName" parameterType="string" resultType="course">
+	select * from course where cname=#{cname}
+</select>
+</mapper>
